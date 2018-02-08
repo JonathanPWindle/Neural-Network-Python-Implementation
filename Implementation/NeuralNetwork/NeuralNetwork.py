@@ -5,6 +5,10 @@ def sigmoid(x):
     return 1/(1 + np.exp(-x))
 
 
+def dsigmoid(y):
+    return y * (1-y)
+
+
 def f(x):
     return x*2
 
@@ -34,11 +38,11 @@ class NeuralNetwork:
         self.biasOut = np.ones(shape=(self.outputNodes, 1))
         self.biasOut = 2 * np.random.rand(self.outputNodes, 1) - 1
 
-    def feedForward(self, input, activeFunc):
+    def feedForward(self, inputs, activeFunc):
 
         # Generate hidden outputs
         # Multiply weights by the inputs
-        hidden = np.matmul(self.weightsInHid,input)
+        hidden = np.matmul(self.weightsInHid, inputs)
         # Add the bias onto the calculated hidden outputs
         hidden = np.add(self.biasHid,hidden)
         # Apply the activation function to the hidden outputs
@@ -55,3 +59,46 @@ class NeuralNetwork:
 
         return output
 
+    def train(self,inputs, targets, learningRate):
+        # Feed the inputs into the network
+        outputs = self.feedForward(inputs, sigmoid)
+
+        # Calculate the error
+        outputError = np.subtract(targets, outputs)
+
+        derivSigmoid = np.vectorize(dsigmoid)
+
+        # Calculate gradient
+        gradient = derivSigmoid(outputs)
+        gradient = np.multiply(gradient,outputError)
+        gradient = np.multiply(gradient, learningRate)
+
+        # Calculate deltas
+        hidden = np.matmul(self.weightsInHid, inputs)
+        hidden = np.add(self.biasHid,hidden)
+        activationFunc = np.vectorize(sigmoid)
+        hidden = activationFunc(hidden)
+        transposedHidden = hidden.transpose()
+        hidOutDeltas = np.matmul(gradient, transposedHidden)
+
+        # Adjust weights by deltas
+        self.weightsHidOut = np.add(self.weightsHidOut, hidOutDeltas)
+        # Adjust bias by its deltas
+        self.biasOut = np.add(self.biasOut, gradient)
+
+
+        # Calculate hidden output error
+        transposedHidOutWeights = self.weightsHidOut.transpose()
+        hiddenErrors = np.matmul(transposedHidOutWeights, outputError)
+
+        # Calculate hidden gradient
+        hiddenGradient = derivSigmoid(hidden)
+        hiddenGradient = np.multiply(hiddenGradient,hiddenErrors)
+        hiddenGradient = np.multiply(hiddenGradient,learningRate)
+
+        # Calculate input->hidden deltas
+        transposedInputs = inputs.transpose()
+        inHidDeltas = np.matmul(hiddenGradient, transposedInputs)
+
+        self.weightsInHid = np.add(self.weightsInHid, inHidDeltas)
+        self.biasHid = np.add(self.biasHid, hiddenGradient)
