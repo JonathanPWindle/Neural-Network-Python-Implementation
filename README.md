@@ -13,7 +13,7 @@ understanding.
     * Can only have one hidden layer at the moment
 * Feed forward and train given JSON in the format:
 
-'''javascript
+```javascript
 [
     {
         "inputs": [0,0],
@@ -24,7 +24,7 @@ understanding.
         "target": 1
     }
 ]
-'''
+```
 
 ##### Future Ideas:
 * Multiple hidden layers
