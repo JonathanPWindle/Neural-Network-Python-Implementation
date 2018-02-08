@@ -1,4 +1,4 @@
-##Basic Neural Network
+## Basic Neural Network
 
 This is a small project to delve into the land of neural networks.
 
@@ -8,12 +8,12 @@ understanding.
 
 ---
 ---
-#####Curent Capabilities:
+##### Curent Capabilities:
 * Can have any number of Nodes in each layer
     * Can only have one hidden layer at the moment
 * Feed forward and train given JSON in the format:
 
-'''json
+'''javascript
 [
     {
         "inputs": [0,0],
@@ -26,7 +26,7 @@ understanding.
 ]
 '''
 
-#####Future Ideas:
+##### Future Ideas:
 * Multiple hidden layers
 * CNN capability
 * Different activation functions
